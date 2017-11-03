@@ -1,0 +1,8 @@
+In this level we are presented with an integer and we have to reply the server with a little endian version of the integer.
+
+We use python and the struct module to do the conversion 
+
+struct.pack("<I",num) //this function change num to a little endian unsigned int 
+
+for the C solution, compile with "-m32" flag to compile it into a 32 bit program
+    gcc -m32 solution0.c -o solution0
