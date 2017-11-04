@@ -1,0 +1,5 @@
+this level introduces the concept that memory can be accessed outside of its allocated region, how the stack variables are laid out, and that modifying outside of the allocated memory can modify program execution.
+
+the solution is pretty easy, just put enough chars into "buffer" and it will override variable "modified"
+
+this vulnerability is caused by function fgets, because it does not check input length
