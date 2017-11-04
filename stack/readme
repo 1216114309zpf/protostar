@@ -1,6 +1,7 @@
 to exploit these stack-overflow, we use following gcc compile flags:
-     -m32  -fno-stack-protector -z execstack
+   -g  -m32  -fno-stack-protector -z execstack
 
+-g: compile with some debug information so that we can use gdb to debug
 -m32:compile it to a 32 bit program, not necessaire
 -fno-stack-protector: tell gcc not use canary to check stack smash
 -z execstack: enable stack execution
