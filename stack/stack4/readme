@@ -5,3 +5,7 @@ it seems that the main function's return address can not be modified, thus I add
 to exploit the stack overflow properly. address space randomizaiton should be turned off:
      su root
      sysctl -w kernel.randomize_va_space=0
+
+just modifying wrapper's return address will make a segmentation fault after the execution of fucntion win(),since after win() return, the return address is invalid.
+
+thus we add exit()'s address after win()'s address in the stack, thus when win() returns, it jumps to exit()'s address and exit() does not return.
