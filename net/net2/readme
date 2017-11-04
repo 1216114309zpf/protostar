@@ -1,0 +1,3 @@
+we are presented with 4 integers in little endian representation and we have to sum them and send back the little endian representation
+
+for C solution, compile with "-m32" flag
