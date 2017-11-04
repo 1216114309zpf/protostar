@@ -1,0 +1,10 @@
+this problem just do the opposite of net0
+
+we are presented with an integer in little endian representation and we have to send back se ASCII representation
+
+struct.unpack("<I",wanted)  //unpack the string wanted as an unsigned integer.
+
+for the c solution, compile it with "-m32" flag
+    gcc -m32 solution1.c -o solution1
+
+
