@@ -32,16 +32,15 @@ int main()
    
    int wanted = 0;
    memset(buffer, 0, sizeof(buffer)); 
-   if(recv(sockfd,buffer,1024,0)==-1)
+   if(recv(sockfd,&wanted,sizeof(wanted),0)==-1)
       fatal("recv erro");
-   wanted =*(int*)buffer;
 
-   memset(buffer, 0, sizeof(buffer)); 
+
    sprintf(buffer,"%d",wanted);
    if(send(sockfd,buffer,1024,0)==-1)
       fatal("send erro");
 
-   memset(result, 0, sizeof(result)); 
+   memset(result, 0, sizeof(result));//fill result with end flag of string '\0' 
    if(recv(sockfd,result,1024,0)==-1)
       fatal("recv erro");
 
