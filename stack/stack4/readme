@@ -1,0 +1,7 @@
+int this problem, I modidied the source code a little.
+
+it seems that the main function's return address can not be modified, thus I add a wrapper function to modify the wrapper function's address.
+
+to exploit the stack overflow properly. address space randomizaiton should be turned off:
+     su root
+     sysctl -w kernel.randomize_va_space=0
