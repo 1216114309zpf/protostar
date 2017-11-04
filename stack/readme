@@ -1,0 +1,14 @@
+to exploit these stack-overflow, we use following gcc compile flags:
+     -m32  -fno-stack-protector -z execstack
+
+-m32:compile it to a 32 bit program, not necessaire
+-fno-stack-protector: tell gcc not use canary to check stack smash
+-z execstack: enable stack execution
+
+besides,we use
+       su root
+       sysctl -w kernel.randomize_va_space=0
+be turn off address space randomization
+
+
+
