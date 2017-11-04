@@ -1,6 +1,6 @@
 In this level we are presented with an integer and we have to reply the server with a little endian version of the integer.
 
-We use python and the struct module to do the conversion 
+We use python and the struct module to do the conversion .
 
 struct.pack("<I",num) //this function change num to a little endian unsigned int 
 
