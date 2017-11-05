@@ -1,0 +1,22 @@
+Similar to format2, but this time, the variable target should be modified to a value pretty large,like an address.
+
+It seems that we can't modify it with just one write, so we can write to target 4 times and eache time just modify a byte. But write fours times seems pretty complex, and actully, writing 4 times means we will total modify 7 bytes, thus modify something else.
+
+there is another way called "short write", which means each time we write a short(2 bytes), thus we just need 2 writes. this way is easy to implement and will pollute at most one byte.
+
+first, we find the address of variable "target" with GDB:
+     0x804a048
+next, we find the offset of "buffer" from current stack address:
+   for i in {1..100}; do echo "trying offset $i - $(echo DDDD%$i\$08x | ./format3)";done | grep DDDD44444444
+       trying offset 12 - DDDD44444444
+So the trick here is to split 0x01025544 into 0x0102 and 0x5544 and write them in two consecutive 2bytes memory addresses.
+
+0x0102 = 258 
+0x5544 = 21828
+
+So we need to write 258 into 0x080496f6 (target + 2 address) and 21828 into 080496f4 (target address) since we are using a little indian system. Also, we only want to write two bytes, so we will use %hn for that.
+
+Also, the arguments to printf will be addresses so 4 bytes each. If our buffer starts in the offset 12, then the next printf argument (13) will be 4 bytes from the beggining of our buffer, and thats where we need to place the address of the 2 LSB bytes.
+
+thus we construct the following input:
+    python -c "print '\x48\xa0\x04\x08'+'\x4a\xa0\x04\x08'+'%250x'+'%13\$hn'+'%21570x'+'%12\$hn'" | ./format3
