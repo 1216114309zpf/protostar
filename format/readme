@@ -1,0 +1,7 @@
+format string can be exploited when the programmer use something like
+       printf(str);
+instead of 
+       printf("%s",str);
+and here str is a string that contains what inputed by user.
+
+we can use "%x" to read any memory space and "%n" to write any writable space.
