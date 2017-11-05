@@ -1,0 +1,15 @@
+the fault happens here:
+    auth = malloc(sizeof(auth));
+auth is defined as "struct auth*", the allocated space should be sizeof(struct auth), but here it uses sizeof(auth), auth is just a pointer, its size is 4,while struct auth's size is 36.
+
+The strdup() function returns a pointer to a  new  string  which  is  a duplicate  of the string s.  Memory for the new string is obtained with malloc(3), and can be freed with free(3).
+
+thus when    service = strdup(line + 7);   is executed, it will allocate space adjacent to the heap space allocate to auth, and auth will regard some of service's space as its own.
+
+use ltrace we can easily see that space allocated to auth is 16, and the distance between the begining of struct auth object and auth->auth is 32, thus as 17th~20th byte in service space will be regarded as auth->auth by auth.
+
+therefore, following input should work:
+./heap2
+auth zpf
+service aaaabbbbccccddddeeee
+login
