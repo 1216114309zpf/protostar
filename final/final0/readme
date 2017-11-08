@@ -1,0 +1,18 @@
+This problem trivially combines a stack overflow and network programming for a remote overflow.
+
+what is non-trival is that the process will change every lower character in our buffer into upper case, and a copy of the modified buffer will be returned. 
+
+we can return to lib our our buffer, return to lib is trivial, here we choose to return to our buffer.
+
+while we can choose to return to the original buffer(on stack) or return to the copied buffer(on heap), return to the original buffer is trivial, so we return to the copied buffer.
+
+now the challenges are:
+     1, the shellcode in the buffer may not contain any value between 'a' and 'z';
+     2, find the address of the copied buffer on heap;
+
+for the first challenge, we just use the avalible shellcode that contains no lower characters:
+     https://www.exploit-db.com/exploits/13427/
+
+for the second challenge, since there is no handle of the copied buffer on stack, it's hard to find the address of the copied buffer with gdb(it's in $eax, may be find easily, anyway). but we know the address of the copied buffer will be stored in $eax, so instead of overwitting return address with the value stored in $eax(the address of the copied buffer), we overwrite the return address with the address of instruction "call eax".
+
+so the challeng becomes find the adress of an instruction called "call eax" in memory.
