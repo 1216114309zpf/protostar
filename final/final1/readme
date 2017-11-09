@@ -17,3 +17,6 @@ and username's address is easy to find with gdb.
 So last question is how to store username's address in puts()'s entry in GOT? here we use "pw" to specify an adress(puts()'s entry address in GOT) and use "%n$" to write buffer's address(maybe with some offset) to it.
 
 the written byte length  and offset of format string can be find with the help of core file and syslog.
+
+reference:
+http://www.pwntester.com/blog/2013/12/26/protostar-final0-3-write-ups/
