@@ -1,0 +1,19 @@
+In this problem, it seems that the only vulnerable function is syslog(), according to "man syslog", its prototype is:
+    void syslog(int priority, const char *format, ...);
+but in function logit(), it is used as:
+    syslog(LOG_USER|LOG_DEBUG, buf);
+so it's a typical format string vulnerability.
+
+To exploit this vulnerability, our basic idea is use the format string vulnerability to modify GOT table and let the control flow to jump to our shellcode in input buffer.
+
+We know that syslog() will write to the log file, then it must call function puts(), so we just use the format string vulerablity to override entry of puts in GOT to let it point to our shellcode.
+
+We just put the shellcode in username(since username is only 128 bytes, the shellcode can't be longger than 128).
+
+puts()'s entry address in GOT table is easy to find with objdump:
+     objdump -TR /opt/protostar/bin/final1 | grep puts
+and username's address is easy to find with gdb.
+
+So last question is how to store username's address in puts()'s entry in GOT? here we use "pw" to specify an adress(puts()'s entry address in GOT) and use "%n$" to write buffer's address(maybe with some offset) to it.
+
+
